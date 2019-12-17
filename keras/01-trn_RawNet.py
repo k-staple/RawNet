@@ -136,7 +136,7 @@ if __name__ == '__main__':
 	with open(dir_yaml, 'r') as f_yaml:
 		parser = yaml.load(f_yaml)
 	
-	dir_dev_scp = parser['dev_scp']
+	dir_dev_scp = parser['scp'] #changed dir_scp to scp
 	with open(dir_dev_scp, 'r') as f_dev_scp:
 		dev_lines = f_dev_scp.readlines()
 	dic_spk, list_spk = make_spkdic(dev_lines)
