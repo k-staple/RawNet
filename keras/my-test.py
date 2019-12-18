@@ -55,10 +55,14 @@ def compose_spkFeat_dic(lines, model, f_desc_dic, base_dir):
   '''
   dic_spkFeat = {}
   for line in tqdm(lines, desc='extracting spk feats'):
+#########
+    print(line)
+########
     k, f, p = line.strip().split(' ')
     p = int(p)
     if f not in f_desc_dic:
-      f_tmp = '/'.join([base_dir, f])
+      # f_tmp = '/'.join([base_dir, f])
+      f_tmp = f
       f_desc_dic[f] = open(f_tmp, 'rb')
 
     f_desc_dic[f].seek(p)
@@ -146,10 +150,13 @@ if __name__ == '__main__':
 
 ###########
   #include parts form the beginning
-  _abspath = os.path.abspath(__file__)
+  #hardcode __file__ to a file in same directory (keras) since colab doesn't load file path variable
+  sameDirFile = "01-trn_RawNet.py"
+  _abspath = os.path.abspath(sameDirFile)
   dir_yaml = os.path.splitext(_abspath)[0] + '.yaml'
   with open(dir_yaml, 'r') as f_yaml:
     parser = yaml.load(f_yaml)
+
 
   
   save_dir = ''
@@ -166,24 +173,26 @@ if __name__ == '__main__':
   #make speaker embeddings and compute cos_sim
   #include variables needed for lower section I copied from RawNet
 ###########
-  eval_lines = open(testFile, 'r').readlines() #??
+  eval_lines = open(parser['eval_scp'], 'r').readlines() #NOT testFile with bool audio1.wav audio2.wav; should be from processed wav from step 2 recreate environment in README
   trials = open(testFile, 'r').readlines() 
- 
-  model, m_name = get_model_pretrn(argDic = parser['model'])
-  model_pred = Model(inputs=model.get_layer('input_pretrn').input, outputs=model.get_layer('code_pretrn').output)
   
+  #runs the file model_RawNet_pre_train.py since func is imported from there
+  model, m_name = get_model_pretrn(argDic = parser['model'])
+  print('m_name')
+  print(m_name)
+  print('after m_name')
+  model_pred = Model(inputs=model.get_layer('input_pretrn').input, outputs=model.get_layer('code_pretrn').output)
+
 #PPPPP parser['base_dir'] = '' #base dir is here
 
   epoch = 1
   #have to define?
   #?? dic_eval[spkMd], dic_eval[utt]
   #f_err defined & opened above
-
-
 ###########
 
 
-  ####to deal for now with 2 indents
+  ####to deal for now with 2 indents of code copied from 01-trn_RawNet.py
   loopVar = 0
   while(loopVar < 1):
     loopVar = 1 
@@ -191,7 +200,7 @@ if __name__ == '__main__':
     #evaluate! #print('{score} {target}\n'.format(score=cos_score,target=target))
     dic_eval = compose_spkFeat_dic(lines = eval_lines, model = model_pred, f_desc_dic = {}, base_dir = parser['base_dir'])
 	
-    f_res = open(save_dir + 'results_pretrn/epoch%s.txt'%(epoch), 'w') 
+    #f_res = open(save_dir + 'results_pretrn/epoch%s.txt'%(epoch), 'w') 
     y = []
     y_score = []
     for smpl in trials:
@@ -200,8 +209,9 @@ if __name__ == '__main__':
       cos_score = cos_sim(dic_eval[spkMd], dic_eval[utt])
       y.append(target)
       y_score.append(cos_score)
-      f_res.write('{score} {target}\n'.format(score=cos_score,target=target))
-    f_res.close()
+      print('{score} {target}\n'.format(score=cos_score,target=target))
+      #f_res.write('{score} {target}\n'.format(score=cos_score,target=target))
+    #f_res.close()
     fpr, tpr, thresholds = roc_curve(y, y_score, pos_label=1)
     
     eer = brentq(lambda x: 1. - x - interp1d(fpr, tpr)(x), 0., 1.)

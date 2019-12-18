@@ -40,9 +40,8 @@ def join_scp(f_dir, nb_proc):
 	f_scp_pe.close()
 
 
-
-DB_dir = '/DB/VoxCeleb1/voxceleb1_wav/'#directory where downloaded VoxCeleb1 dataset exists
-scp_dir = '/DB/'#directory to store processed raw waveforms
+DB_dir = '../../VGG-Speaker-Recognition/media/weidi/2TB-2/datasets/voxceleb1/wav'
+scp_dir = '/DB/' #modified eval_scp variable in yaml so it's directly under this /DB/;directory to store processed raw waveforms
 dataset = 'dev'#execute this script with either 'dev' or 'eval'
 
 if __name__ == '__main__':
