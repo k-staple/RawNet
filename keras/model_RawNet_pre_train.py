@@ -9,7 +9,11 @@ from keras.engine.topology import Layer
 from keras.activations import softmax
 import os
 _abspath = os.path.abspath(__file__)
+print('_abspath')
+print(_abspath)
 m_name = _abspath.split('/')[-1].split('.')[0][6:]
+print('m_name')
+print(m_name)
 
 
 def simple_loss(y_true, y_pred):
