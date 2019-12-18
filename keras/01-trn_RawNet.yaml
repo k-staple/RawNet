@@ -9,7 +9,7 @@ amsgrad: 1
 
 lr: 0.001
 dev_scp: /DB/VoxCeleb1/feature/waveform/dev_wav_pe.scp
-eval_scp: /DB/eval_wav_pe.scp
+eval_scp: eval_wav_pe.scp
 epoch: 100
 save_dir: /exp/model/networks/
 name: reproduce_RawNet
